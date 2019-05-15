@@ -1,7 +1,10 @@
 <?php
 namespace PHPStan\Reflection\ZendMvc;
 
+use PHPStan\Reflection\ClassMemberReflection;
+use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
@@ -30,7 +33,7 @@ class PluginMethodReflection implements MethodReflection
         return $this->broker->getClass($this->className);
     }
 
-    public function getPrototype(): MethodReflection
+    public function getPrototype(): ClassMemberReflection
     {
         return $this;
     }
@@ -71,5 +74,15 @@ class PluginMethodReflection implements MethodReflection
     public function getReturnType(): Type
     {
         return $this->returnType;
+    }
+
+    /**
+     * @return \PHPStan\Reflection\ParametersAcceptor[]
+     */
+    public function getVariants(): array
+    {
+        return [
+            new FunctionVariant($this->getParameters(), $this->isVariadic(), $this->getReturnType())
+        ];
     }
 }

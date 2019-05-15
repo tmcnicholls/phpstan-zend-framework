@@ -2,7 +2,7 @@
 namespace PHPStan\Reflection\ZendMvc;
 
 use PHPStan\Broker\Broker;
-use PHPStan\Reflection\BrokerAwareClassReflectionExtension;
+use PHPStan\Reflection\BrokerAwareExtension;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
@@ -18,7 +18,7 @@ use Zend\Stdlib\ArrayUtils;
 
 class PluginClassReflectionExtension implements
     MethodsClassReflectionExtension,
-    BrokerAwareClassReflectionExtension
+    BrokerAwareExtension
 {
 
     /* @var Broker */
@@ -33,7 +33,7 @@ class PluginClassReflectionExtension implements
      * @param Broker $broker Class reflection broker
      * @return void
      */
-    public function setBroker(Broker $broker)
+    public function setBroker(Broker $broker): void
     {
         $this->broker = $broker;
     }
@@ -77,7 +77,7 @@ class PluginClassReflectionExtension implements
         $methodIsInvokable = is_callable($this->pluginManager->get($methodName));
 
         if ($methodIsInvokable) {
-            $methodReflection = $this->broker->getClass(get_class($plugin))->getMethod('__invoke');
+            $methodReflection = $this->broker->getClass(get_class($plugin))->getNativeMethod('__invoke');
             $returnType = $methodReflection->getReturnType();
 
             return new InvokableMethodReflection(

@@ -1,9 +1,11 @@
 <?php
 namespace PHPStan\Reflection\ZendMvc;
 
+use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\Type;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 
 class InvokableMethodReflection implements MethodReflection
@@ -28,7 +30,7 @@ class InvokableMethodReflection implements MethodReflection
         return $this->defaultMethodReflection->getDeclaringClass();
     }
 
-    public function getPrototype(): MethodReflection
+    public function getPrototype(): ClassMemberReflection
     {
         return $this->defaultMethodReflection->getPrototype();
     }
@@ -69,5 +71,15 @@ class InvokableMethodReflection implements MethodReflection
     public function getReturnType(): Type
     {
         return $this->returnType;
+    }
+
+    /**
+     * @return \PHPStan\Reflection\ParametersAcceptor[]
+     */
+    public function getVariants(): array
+    {
+        return [
+            new FunctionVariant($this->getParameters(), $this->isVariadic(), $this->getReturnType())
+        ];
     }
 }
